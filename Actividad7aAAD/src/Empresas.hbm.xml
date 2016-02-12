@@ -11,11 +11,18 @@
         <property name="nombre" type="java.lang.String">
             <column name="NOMBRE" />
         </property>
+        <!--  <one-to-one name="direccion" class="Direccion" cascade="save-update"></one-to-one>-->
         <property name="empleados" type="int">
             <column name="EMPLEADOS" />
         </property>
-        <property name="direccion" type="java.lang.String">
-            <column name="DIRECCION" />
-        </property>
+               
+		<list name="pedidos" table="PEDIDOS-EMPRESA" inverse="true"
+			cascade="save-update">
+			<key column="empresa" />
+			<list-index column="POSICION">
+			</list-index>
+			<one-to-many class="Pedidos" />
+		</list>
+		<many-to-one name="dir" class="Direccion" column="id_direccion" cascade="save-update" unique="true"></many-to-one>
     </class>
 </hibernate-mapping>

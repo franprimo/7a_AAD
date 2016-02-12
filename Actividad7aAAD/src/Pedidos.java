@@ -5,9 +5,14 @@ public class Pedidos {
 
 	private int id = 0;
 	private String fecha = null;
-	
+	private Empresas empresa;
+
 	public Pedidos(){
 		
+	}
+	
+	public Pedidos(String fecha){
+		this.fecha = fecha;
 	}
 
 	public int getId() {
@@ -26,5 +31,11 @@ public class Pedidos {
 		this.fecha = fecha;
 	}
 	
-	
+	public Empresas getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresas empresa) {
+		this.empresa = empresa;
+	}
 }

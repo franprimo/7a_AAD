@@ -4,12 +4,15 @@
 <hibernate-configuration>
  <session-factory>
   <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-  <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/actividad7a</property>
+  <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/actividad7c</property>
   <property name="hibernate.connection.username">root</property>
-  <property name="hibernate.default_schema">actividad7a</property>
+  <property name="hibernate.default_schema">actividad7c</property>
   <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <property name="hibernate.hbm2ddl.auto">create</property>
+  <property name="hibernate.show_sql">true</property>
   <mapping resource="Empresas.hbm.xml"/>
   <mapping resource="Items.hbm.xml"/>
   <mapping resource="Pedidos.hbm.xml"/>
+  <mapping resource="Direccion.hbm.xml"/>
  </session-factory>
 </hibernate-configuration>

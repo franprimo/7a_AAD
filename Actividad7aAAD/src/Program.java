@@ -1,63 +1,115 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 
 public class Program {
+	
+	private static Session session;
 
 	public static void main(String[] args) {
 		
-		Session session = HibernateUtilities.getSessionFactory().openSession();	
+		session = HibernateUtilities.getSessionFactory().openSession();
 		
 		//Para empezar, tenemos que abrir una transaccion.
+		//session.beginTransaction();
+		
+		introducirDatos(session);
+		recuperarEmpresaPorCif(1);
+		recuperarPedidoPorCifEmpresa(1);
+		recuperarEmpresaPorStringDado("Yo");
+		
+		session.close();
+		HibernateUtilities.getSessionFactory().close();
+		
+		
+	
+	}
+	
+	public static void introducirDatos(Session session){
+			
 		session.beginTransaction();
 		
-		//CREACION DE OBJETOS
-		//Creamos un par de empresas.
-		Empresas emp = new Empresas();
-		emp.setNombre("Ford");
-		emp.setEmpleados(9000);
-		emp.setDireccion("Almusafes");
+		Empresas e;
 		
-		session.save(emp);
+		e = creaEmpresa("Yoigo", 550, "Calle Mayor", "Calle mayor", "Madrid", 28020, "11-02-2016");
+		e.addPedido(new Pedidos("15-02-2015"));
+		session.save(e);
 		
-		Empresas emp2 = new Empresas();
-		emp2.setNombre("Apple");
-		emp2.setEmpleados(3000);
-		emp2.setDireccion("Cupertino");
+		e = creaEmpresa("Yogurteria", 50, "Hermanos Antich", "hermanos antich", "Silla", 46460, "14-02-2016");
+		session.save(e);
 		
-		session.save(emp2);
+		e = creaEmpresa("Seidor", 3456, "Ernesto Vilamayor", "ernesto vilamayor", "Valencia", 46046, "14-02-2016");
+		session.save(e);
 		
-		
-		//Creamos un par de pedidos.
-		Pedidos p1 = new Pedidos();
-		p1.setFecha("2016-01-10");
-		
-		session.save(p1);
-		
-		Pedidos p2 = new Pedidos();
-		p2.setFecha("2016-01-23");
-		
-		session.save(p2);
-		
-		//Creamos un par de items.
-		Items i1 = new Items();
-		i1.setNombre("iphone");
-		i1.setCantidad(4500);
-		
-		session.save(i1);
-		
-		Items i2 = new Items();
-		i2.setNombre("Mondeo");
-		i2.setCantidad(10000);
-		
-		session.save(i2);
-		//---------------------
+		e = creaEmpresa("Mercadona", 7654, "Aragon", "aragon", "Valencia", 46010, "05-01-2016");
+		session.save(e);
 		
 		session.getTransaction().commit();
 		
-		session.close();
-		//HibernateUtilities.getSessionFactory().close();
+	}
+	
+	public static Empresas creaEmpresa(String nombre, int empleados, String calle, String calle2, String pueblo, int cp, String fecha){
+		Empresas e = new Empresas();
 		
-
+		e.setNombre(nombre);
+		e.setEmpleados(empleados);
+		
+		e.getDir().setCalle(calle2);
+		e.getDir().setPoblacion(pueblo);
+		e.getDir().setCp(cp);
+		e.addPedido(new Pedidos(fecha));
+		
+		return e;
+	}
+	
+	public static List<Empresas> recuperarEmpresaPorCif(int cif){
+		
+		List<Empresas> empresas = new ArrayList<Empresas>();
+		
+		session.beginTransaction();
+		Query query = session.createQuery("from Empresas as empresas where empresas.cif='"+cif+"'");
+		empresas = query.list();
+		
+		for(Empresas e: empresas){
+			System.out.println(e.getCif()+" "+e.getNombre());
+		}
+		
+		
+		return empresas;
+	}
+	
+	public static List<Pedidos> recuperarPedidoPorCifEmpresa(int cif){
+		
+		List<Pedidos> pedidos = new ArrayList<Pedidos>();
+		
+		session.beginTransaction();
+		Query query = session.createQuery("from Pedidos as pedidos where pedidos.empresa.cif='"+cif+"'");
+		pedidos = query.list();
+		
+		for(Pedidos p: pedidos){
+			System.out.println(p.getId()+" "+p.getFecha()+" "+p.getEmpresa().getCif());
+		}
+		
+		
+		return pedidos;
+	}
+	
+	public static List<Empresas> recuperarEmpresaPorStringDado(String stringInicio){
+		
+		List<Empresas> empresas = new ArrayList<Empresas>();
+		
+		session.beginTransaction();
+		Query query = session.createQuery("from Empresas as empresas where empresas.nombre like '"+stringInicio+"%'");
+		empresas = query.list();
+		
+		for(Empresas e: empresas){
+			System.out.println(e.getCif()+" "+e.getNombre());
+		}
+		
+		return empresas;
 	}
 
 }

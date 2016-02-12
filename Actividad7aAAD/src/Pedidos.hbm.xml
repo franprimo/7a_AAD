@@ -6,10 +6,11 @@
  <class name="Pedidos" table="PEDIDO">
   <id name="id" type="int">
    <column name="ID"/>
-   <generator class="increment"/>
+   <generator class="increment"></generator>   		
   </id>
-  <property generated="never" lazy="false" name="fecha" type="java.lang.String">
-   <column name="FECHA"/>
-  </property>
+        <property name="fecha" type="java.lang.String">
+            <column name="FECHA" />
+       	</property>
+  <many-to-one name="empresa" class="Empresas" not-null="true"></many-to-one>
  </class>
 </hibernate-mapping>
